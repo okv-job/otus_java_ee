@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context path="/myApp" docBase="myApp"
+         crossContext="true" reloadable="true" debug="1">
+
+    <Resource name="jdbc/lesson2" auth="Container"
+              type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/Test?characterEncoding=utf-8"
+              username="root" password="secret" maxActive="100" maxIdle="30" maxWait="10000"/>
+</Context>
