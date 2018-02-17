@@ -6,5 +6,5 @@
     <Resource name="jdbc/lesson2" auth="Container"
               type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://localhost:3306/Test?characterEncoding=utf-8"
-              username="root" password="Rjhsnybrjd10" maxActive="100" maxIdle="30" maxWait="10000"/>
+              username="root" password="root" maxActive="100" maxIdle="30" maxWait="10000"/>
 </Context>

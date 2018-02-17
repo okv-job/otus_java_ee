@@ -7,8 +7,9 @@
     <input type="submit" value="Войти">
   </form>
   <div v-else>
+    <input type="text" placeholder="Поиск сотрудника" v-model.trim="searchText">
     <ul>
-      <li v-for="user in users" :key="user.id" @click="openUser(user)" class="user">{{user.firstName}} {{user.secondName}} - {{user.address}}</li>
+      <li v-for="user in filteredUsers" :key="user.id" @click="openUser(user)" class="user">{{user.firstName}} {{user.secondName}} - {{user.address}}</li>
     </ul>
     <button @click="addNewUser()">Добавить нового пользователя</button>
   </div>
@@ -36,7 +37,9 @@ export default {
       isLoggedIn: false,
       firstName: "",
       users: [],
+      filteredUsers: [],
       isAddNewUser: false,
+      searchText: "",
       selectedUser: {
         firstName: "",
         secondName: "",
@@ -47,6 +50,33 @@ export default {
   },
   created() {
     this.updateInformation();
+  },
+  watch: {
+    searchText: function(newVal) {
+      if (newVal.length == 0) {
+        this.filteredUsers = this.users;
+        return;
+      }
+      if (newVal) {
+        this.filteredUsers = this.users.filter(user => {
+          if (user.address.toLowerCase().indexOf(newVal.toLowerCase()) != -1) {
+            return user;
+          }
+          if (
+            user.firstName.toLowerCase().indexOf(newVal.toLowerCase()) != -1
+          ) {
+            return user;
+          }
+          if (
+            user.secondName.toLowerCase().indexOf(newVal.toLowerCase()) != -1
+          ) {
+            return user;
+          }
+        });
+      } else {
+        this.filteredUsers = this.users;
+      }
+    }
   },
   methods: {
     updateInformation: function() {
@@ -60,10 +90,12 @@ export default {
             this.isLoggedIn = true;
             this.firstName = response.data.firstName;
             this.users = response.data.users;
+            this.filteredUsers = this.users;
           } else {
             this.isLoggedIn = false;
             this.firstName = "";
             this.users = [];
+            this.filteredUsers = this.users;
           }
         })
         .catch(err => {
@@ -182,6 +214,7 @@ export default {
             this.isLoggedIn = true;
             this.firstName = response.data.firstName;
             this.users = response.data.users;
+            this.filteredUsers = this.users;
           } else {
             alert("Неверный логин или пароль!");
           }
@@ -201,6 +234,7 @@ export default {
             this.isLoggedIn = false;
             this.firstName = "";
             this.users = [];
+            this.filteredUsers = this.users;
             alert("Вы успешно вышли");
           } else {
             alert("Ошибка сервера");

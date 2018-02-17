@@ -1,6 +1,7 @@
 package ru.korytnikov.oleg.dao;
 
 import ru.korytnikov.oleg.models.User;
+import ru.korytnikov.oleg.models.Users;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,11 +28,10 @@ public class UserDaoImpl implements UserDao {
     public void addUser(User user) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users " +
-                    "(first_name,second_name,address,sallary) VALUES (?,?,?,?)");
+                    "(first_name,second_name,address) VALUES (?,?,?)");
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getSecondName());
             statement.setString(3, user.getAddress());
-            statement.setInt(4, 100000);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,10 +67,39 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void init(Users users) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT , first_name VARCHAR (40) NOT NULL ," +
+                    "second_name VARCHAR (40) NOT NULL , address VARCHAR (100))");
+            statement.execute("CREATE TABLE IF NOT EXISTS auth (id INT NOT NULL, login VARCHAR (40) NOT NULL ," +
+                    "password VARCHAR (40) NOT NULL, FOREIGN KEY (id) REFERENCES users(id))");
+            users.getUsers().forEach(user -> {
+                addUser(user);
+            });
+            statement.execute("INSERT INTO auth VALUES (1,'admin','admin')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void destroy() {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute("DROP TABLE auth");
+            statement.execute("DROP TABLE users");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void updateUser(User user) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement("UPDATE users " +
-                    "SET first_name=?,second_name=?,address=?,sallary=100000 WHERE id = ?");
+                    "SET first_name=?,second_name=?,address=? WHERE id = ?");
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getSecondName());
             statement.setString(3, user.getAddress());

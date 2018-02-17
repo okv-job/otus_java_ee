@@ -1,6 +1,7 @@
 package ru.korytnikov.oleg.dao;
 
 import ru.korytnikov.oleg.models.User;
+import ru.korytnikov.oleg.models.Users;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface UserDao {
     User findUser(String username, String password);
 
     List<User> getUsers();
+
+    void init(Users users);
+
+    void destroy();
 }
