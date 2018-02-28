@@ -12,6 +12,29 @@
       <li v-for="user in filteredUsers" :key="user.id" @click="openUser(user)" class="user">{{user.firstName}} {{user.secondName}} - {{user.address}}</li>
     </ul>
     <button @click="addNewUser()">Добавить нового пользователя</button>
+          <button @click="getStatistic">Показать статистику</button>
+      <section v-if="isStatisticEnabled">
+        <table>
+          <thead>
+            <tr>
+              <td>marker name</td>
+              <td>page name</td>
+              <td>browser name</td>
+              <td>ip address</td>
+              <td>time</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(statistic, index) in statistics" :key="index">
+              <td>{{statistic.markerName}}</td>
+              <td>{{statistic.pageName}}</td>
+              <td>{{statistic.browserName}}</td>
+              <td>{{statistic.ipAddress}}</td>
+              <td>{{statistic.time}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
   </div>
   <div class="userDescription cloak" ref="userDescription">
     <span class="close" @click="close">&times;</span>
@@ -19,6 +42,7 @@
     <input type="text" v-model="selectedUser.secondName" name="secondName">
     <input type="text" v-model="selectedUser.address" name="address">
     <button v-if="isAddNewUser" @click="updateUser()">Добавить пользователя</button>
+    
     <div v-else>
       <button @click="updateUser()">Обновить</button>
       <button @click="removeUser()">Удалить пользователя</button>
@@ -45,7 +69,9 @@ export default {
         secondName: "",
         selectedUser: "",
         address: ""
-      }
+      },
+      isStatisticEnabled: false,
+      statistics: []
     };
   },
   created() {
@@ -85,7 +111,6 @@ export default {
         url: "/login"
       })
         .then(response => {
-          console.log(response);
           if (response.data.result) {
             this.isLoggedIn = true;
             this.firstName = response.data.firstName;
@@ -136,7 +161,6 @@ export default {
           data: formData
         })
           .then(response => {
-            console.log(response);
             alert("Пользователь успешно добавлен!");
             this.close();
           })
@@ -156,7 +180,6 @@ export default {
           data: formData
         })
           .then(response => {
-            console.log(response);
             alert("Пользователь успешно обновлен!");
             this.close();
           })
@@ -179,7 +202,6 @@ export default {
         data: formData
       })
         .then(response => {
-          console.log(response);
           alert("Пользователь успешно удален!");
           this.close();
         })
@@ -202,14 +224,12 @@ export default {
       let formData = new FormData();
       formData.append("login", this.login);
       formData.append("password", this.password);
-      console.log(formData);
       axios({
         method: "POST",
         url: "/login",
         data: formData
       })
         .then(response => {
-          console.log(response);
           if (response.data.result) {
             this.isLoggedIn = true;
             this.firstName = response.data.firstName;
@@ -243,6 +263,23 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    getStatistic: function() {
+      console.log("getting");
+      this.isStatisticEnabled = !this.isStatisticEnabled;
+      if (this.isStatisticEnabled) {
+        axios({
+          method: "GET",
+          url: "/mark"
+        })
+          .then(resp => {
+            this.statistics = resp.data;
+            console.log(this.statistics);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   }
 };

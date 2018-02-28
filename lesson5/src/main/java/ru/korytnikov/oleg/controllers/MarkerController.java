@@ -20,6 +20,13 @@ import java.util.Map;
 public class MarkerController extends HttpServlet {
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        UserDao dao = new UserDaoImpl();
+        Gson json = new Gson();
+        resp.getWriter().write(json.toJson(dao.getMarkedPaths()));
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson json = new Gson();
         HttpSession session = req.getSession();
@@ -36,11 +43,23 @@ public class MarkerController extends HttpServlet {
             browserName = userAgent.substring(userAgent.indexOf("Opera")).split(" ")[0];
         }
 
+        String markerName = null;
+
+        if (session.getAttribute("isLoggedIn") != null) {
+            if (Boolean.TRUE.equals(session.getAttribute("isLoggedIn"))) {
+                markerName = session.getAttribute("login").toString();
+            } else {
+                markerName = session.getId();
+            }
+        } else {
+            markerName = session.getId();
+        }
+
 
         marker.setBrowserName(browserName);
         marker.setIpAddress(req.getRemoteAddr());
         marker.setTime(new Date().toString());
-        marker.setMarkerName(session.getId());
+        marker.setMarkerName(markerName);
         System.out.println(marker);
         UserDao dao = new UserDaoImpl();
         dao.markPath(marker);

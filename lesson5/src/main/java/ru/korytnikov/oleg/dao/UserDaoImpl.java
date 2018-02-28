@@ -80,8 +80,25 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
-
     }
+
+    @Override
+    public List<Marker> getMarkedPaths() {
+        List<Marker> result = new ArrayList<>();
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM  markers");
+            while (rs.next()) {
+                result.add(new Marker(rs.getString("marker_name"), rs.getString("page_name"),
+                        rs.getString("browser_name"), rs.getString("ip_addr"),
+                        rs.getString("time")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     @Override
     public void init(Users users) {

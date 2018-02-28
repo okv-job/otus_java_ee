@@ -19,6 +19,8 @@ public interface UserDao {
 
     void markPath(Marker marker);
 
+    List<Marker> getMarkedPaths();
+
     void init(Users users);
 
     void destroy();
