@@ -1,5 +1,6 @@
 package ru.korytnikov.oleg.dao;
 
+import ru.korytnikov.oleg.models.Marker;
 import ru.korytnikov.oleg.models.User;
 import ru.korytnikov.oleg.models.Users;
 
@@ -67,6 +68,22 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void markPath(Marker marker) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO markers VALUES (NULL , ?, ?, ?, ?, ?)");
+            statement.setString(1, marker.getMarkerName());
+            statement.setString(2, marker.getPageName());
+            statement.setString(3, marker.getBrowserName());
+            statement.setString(4, marker.getIpAddress());
+            statement.setString(5, marker.getTime());
+            statement.execute();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+    }
+
+    @Override
     public void init(Users users) {
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
@@ -74,6 +91,13 @@ public class UserDaoImpl implements UserDao {
                     "second_name VARCHAR (40) NOT NULL , address VARCHAR (100))");
             statement.execute("CREATE TABLE IF NOT EXISTS auth (id INT NOT NULL, login VARCHAR (40) NOT NULL ," +
                     "password VARCHAR (40) NOT NULL, FOREIGN KEY (id) REFERENCES users(id))");
+            statement.execute("CREATE TABLE IF NOT EXISTS  markers (\n" +
+                    "    id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                    "    marker_name VARCHAR(50) not null,\n" +
+                    "    page_name VARCHAR(50),\n" +
+                    "    browser_name VARCHAR(100),\n" +
+                    "    ip_addr VARCHAR(50),\n" +
+                    "    time VARCHAR(100)) ENGINE=INNODB;");
             users.getUsers().forEach(user -> {
                 addUser(user);
             });
@@ -90,6 +114,7 @@ public class UserDaoImpl implements UserDao {
             Statement statement = connection.createStatement();
             statement.execute("DROP TABLE auth");
             statement.execute("DROP TABLE users");
+            statement.execute("DROP TABLE markers");
         } catch (SQLException e) {
             e.printStackTrace();
         }

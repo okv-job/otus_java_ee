@@ -27,13 +27,10 @@ public class AuthFilter implements Filter {
         Gson json = new Gson();
         HttpSession session = request.getSession();
         Boolean isLoggedIn = (Boolean) session.getAttribute("isLoggedIn");
-        if (isLoggedIn != null) {
-            if (isLoggedIn) {
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                response.getWriter().write(json.toJson(answer));
-            }
-        } else {
+        if (Boolean.TRUE.equals(isLoggedIn)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+        else {
             response.getWriter().write(json.toJson(answer));
         }
     }

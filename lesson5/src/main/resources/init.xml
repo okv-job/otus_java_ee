@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<users>
+    <user>
+        <firstName>Korytnikov</firstName>
+        <secondName>Oleg</secondName>
+        <address>Chudnovskogo</address>
+        <id>0</id>
+    </user>
+    <user>
+        <firstName>Korytnikov</firstName>
+        <secondName>Alexandr</secondName>
+        <address>Kalinina</address>
+        <id>1</id>
+    </user>
+    <user>
+        <firstName>Kormanovskaya</firstName>
+        <secondName>Anastasya</secondName>
+        <address>Chudnovskogo</address>
+        <id>2</id>
+    </user>
+    <user>
+        <firstName>Ermachkov</firstName>
+        <secondName>Aleksey</secondName>
+        <address>Kalinina</address>
+        <id>3</id>
+    </user>
+    <user>
+        <firstName>Speranskiy</firstName>
+        <secondName>Alexandr</secondName>
+        <address>Bolshevikov</address>
+        <id>4</id>
+    </user>
+    <user>
+        <firstName>Ermachkova</firstName>
+        <secondName>Ludmila</secondName>
+        <address>Kalinina</address>
+        <id>5</id>
+    </user>
+</users>

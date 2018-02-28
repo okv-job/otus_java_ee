@@ -12,6 +12,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,15 @@ public class InitListener implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         System.out.println("Initialized");
-        File file = new File("/home/okv/db");
+        File file = null;
+        try {
+            file = new File(servletContextEvent
+                    .getServletContext()
+                    .getResource("/WEB-INF/classes/init.xml")
+                    .getFile());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         Users users = null;
         if (!file.exists()){
             users = new Users();
@@ -42,6 +51,7 @@ public class InitListener implements ServletContextListener{
             }
         } else {
             try {
+                System.out.println("FILE FOUNDED");
                 JAXBContext jaxbContext = JAXBContext.newInstance(Users.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 users = (Users) jaxbUnmarshaller.unmarshal(file);

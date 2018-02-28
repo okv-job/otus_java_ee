@@ -1,5 +1,6 @@
 package ru.korytnikov.oleg.dao;
 
+import ru.korytnikov.oleg.models.Marker;
 import ru.korytnikov.oleg.models.User;
 import ru.korytnikov.oleg.models.Users;
 
@@ -15,6 +16,8 @@ public interface UserDao {
     User findUser(String username, String password);
 
     List<User> getUsers();
+
+    void markPath(Marker marker);
 
     void init(Users users);
 
